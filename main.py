@@ -12,7 +12,6 @@ app = FastAPI()
 
 client = OpenAI(
     # This is the default and can be omitted
-    project="org-HmSSnrXTAcdmuwRnQtNdAXLj",
     api_key=os.getenv("OPENAI_API_KEY"),
 )
 
