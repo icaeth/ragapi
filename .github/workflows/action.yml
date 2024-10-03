@@ -1,0 +1,78 @@
+name: Publish Docker image
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  push_to_registry:
+    name: Push Docker image to Docker Hub
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: icaeth/${{ github.event.repository.name }}
+
+      - name: create DNS
+        continue-on-error: true
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://dns.hetzner.com/api/v1/records'
+          method: 'POST'
+          customHeaders: '{"Auth-API-Token": "${{ secrets.APITOKEN }}"}'
+          data: '{"zone_id": "eum3jGos9Mf8M3ToouhMLT","type": "A","name": "${{ github.event.repository.name }}","value": "5.9.55.176","ttl": 0}'
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: executing remote ssh commands using password
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
+          script: |
+            mkdir -p yaml/${{ github.event.repository.name }}
+            cd yaml/${{ github.event.repository.name }}
+            touch .env
+            printf "NGINX_CONTAINER=${{ github.event.repository.name }}\nVIRTUAL_HOST=${{ github.event.repository.name }}.samai.cl\nLETSENCRYPT_EMAIL=capitan9@puntapie.cl\nIMAGE=${{ steps.meta.outputs.tags }}" > .env
+
+      - name: copy files via ssh password
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
+          source: "docker-compose.yaml, nginx.conf, default.conf"
+          target: yaml/${{ github.event.repository.name }}
+
+
+      - name: docker compose
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
+          script: |
+            cd yaml/${{ github.event.repository.name }}
+            docker-compose up -d
