@@ -45,7 +45,11 @@ async def ask_openai(prompt: Question):
             {"role": "user", "content": html_prompt}
         ]
     )
-    return {"response": response.choices[0].message.content, "cursos": ["yyh4h3h28bejesc", "yyh4h3h28bejesc"]}
+    html_content = response.choices[0].message.content
+    html_content = html_content.strip('```').strip()
+    html_content = html_content.replace("html\n", "", 1)
+    
+    return {"response": html_content, "cursos": ["yyh4h3h28bejesc", "yyh4h3h28bejesc"]}
 
 
 
