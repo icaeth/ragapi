@@ -19,8 +19,9 @@ client = OpenAI(
 class Question(BaseModel):
     question: str
     image_url: Optional[str] = None  # Campo opcional con valor por defecto None
-    courses: Optional[str] = None  # Campo opcional con valor por defecto None
+    lectures: Optional[str] = None  # Campo opcional con valor por defecto None
     userId: Optional[str] = None
+    courseId: Optional[str] = None
 
 # ENDPOINT ASK
 @app.post("/ask/")
