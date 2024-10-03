@@ -12,14 +12,15 @@ app = FastAPI()
 
 client = OpenAI(
     # This is the default and can be omitted
-    api_key=os.getenv("OPENAI_API_KEY"),
-)
+    api_key="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"),
+
 
 # Modelo para la solicitud POST
 class Question(BaseModel):
     question: str
     image_url: Optional[str] = None  # Campo opcional con valor por defecto None
-
+    courses: Optional[str] = None  # Campo opcional con valor por defecto None
+    userId: Optional[str] = None
 
 # ENDPOINT ASK
 @app.post("/ask/")
@@ -27,6 +28,7 @@ async def ask_question(question: Question):
     # Utilizaremos la API de Datamuse para obtener sinónimos
     url = f"https://api.datamuse.com/words?ml={question.question}"
     async with httpx.AsyncClient() as client:
+        print(question.courses)
         response = await client.get(url)
         # Devolveremos la respuesta de la API de Datamuse
         return response.json()
