@@ -49,7 +49,7 @@ async def ask_openai(prompt: Question):
     html_content = html_content.strip('```').strip()
     html_content = html_content.replace("html\n", "", 1)
     
-    return {"response": html_content, "cursos": ["yyh4h3h28bejesc", "yyh4h3h28bejesc"]}
+    return {"response": html_content, "cursos": ["p1y7wws0g4ti5xi", "6cai7qzu2jo6emr"]}
 
 
 
