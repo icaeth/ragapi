@@ -15,6 +15,7 @@ services:
       VIRTUAL_PORT: 3000
       LETSENCRYPT_HOST: ${VIRTUAL_HOST}
       LETSENCRYPT_EMAIL: capitan27@puntapie.cl
+      OPENAI_API_KEY: "${OPENAI_API_KEY}"
     networks:
       - root_default
 
