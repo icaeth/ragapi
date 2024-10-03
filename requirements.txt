@@ -1,0 +1,9 @@
+plaintext
+fastapi
+uvicorn
+httpx
+python-dotenv
+openai
+typing
+pydantic
+os
