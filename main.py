@@ -38,10 +38,11 @@ async def ask_question(question: Question):
 @app.post("/openai/")
 async def ask_openai(prompt: Question):
     # Cambios realizados para ajustarse a la nueva API
+    html_prompt = f"Entrega una respuesta en formato HTML:\n\n{prompt.question}"
     response = client.chat.completions.create(
         model="gpt-4o-mini",  # O el modelo que prefieras
         messages=[
-            {"role": "user", "content": prompt.question}
+            {"role": "user", "content": html_prompt}
         ]
     )
     return {"response": response.choices[0].message.content, "cursos": ["yyh4h3h28bejesc", "yyh4h3h28bejesc"]}
@@ -65,14 +66,3 @@ async def ask_openai(prompt: Question):
         ]
     )
     return {"response": response.choices[0].message.content, "cursos": ["yyh4h3h28bejesc", "yyh4h3h28bejesc"]}
-
-
-
-
-@app.get("/")
-def read_root():
-    return {"message": "Hello, World!"}
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: str = "hola"):
-    return {"item_id": item_id, "query": q}
