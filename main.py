@@ -12,7 +12,7 @@ app = FastAPI()
 
 client = OpenAI(
     # This is the default and can be omitted
-    api_key=os.getenv("OPENAI_API_KEY"),
+    api_key="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",
 )
 
 # Modelo para la solicitud POST
