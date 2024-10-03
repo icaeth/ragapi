@@ -38,7 +38,7 @@ async def ask_question(question: Question):
 @app.post("/openai/")
 async def ask_openai(prompt: Question):
     # Cambios realizados para ajustarse a la nueva API
-    html_prompt = f"Entrega una respuesta en formato HTML:\n\n{prompt.question}"
+    html_prompt = f"Entrega la información en formato HTML, incluyendo solo <title>, <head>, y <body> sin <!DOCTYPE html> o <html> tags:\n\n{prompt.question}"
     response = client.chat.completions.create(
         model="gpt-4o-mini",  # O el modelo que prefieras
         messages=[
