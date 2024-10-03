@@ -1,11 +1,12 @@
 # Usa una imagen base oficial de Python
-FROM python:3.9-slim
+FROM python:3.10-slim
 
 # Establece el directorio de trabajo
 WORKDIR /app
 
 # Copia el archivo de requerimientos y el código
 COPY requirements.txt .
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
