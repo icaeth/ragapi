@@ -11,10 +11,10 @@ class RAGEmbedding:
         
         # Establish database connection
         self.conn = psycopg2.connect(
-            dbname=os.getenv("DB_NAME"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            host=os.getenv("DB_HOST", "pgvector"),
+            dbname="pgvector",
+            user="esvanguardia",
+            password="papitas",
+            host="pgvector",
             port=5432
         )
 
