@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile
 from pydantic import BaseModel
-from ragapi import RAGSystem
+from ragapi2 import RAGSystem
 
 app = FastAPI()
 rag_system = RAGSystem()
