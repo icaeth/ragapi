@@ -32,4 +32,4 @@ class RAGSystem:
             presence_penalty=0.0,
             stop=["\n"],
         )
-        return response.choices[0].message['content']
+        return response.choices[0].message.content
