@@ -1,3 +1,4 @@
+from typing import Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from ragapi import RAGSystem
@@ -11,7 +12,7 @@ class Document(BaseModel):
 
 class Question(BaseModel):
     question: str
-    img_url: str  
+    img_url: Optional[str] = None  
 
 rag_system = RAGSystem()
 
