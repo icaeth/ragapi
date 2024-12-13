@@ -7,7 +7,7 @@ WORKDIR /app
 # Copia el archivo de requerimientos y el código
 COPY requirements.txt .
 RUN pip install pydantic
-RUN pip install --upgrade pip setuptools
+RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
