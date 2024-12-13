@@ -18,15 +18,12 @@ class RAGSystem:
                     "role": "system",
                     "content": f"Eres un experton en pokemones:\n{context}\n\n"
                                f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos."
-                },
-                {
+                },{                
                     "role": "user",
-                    "content": f"Consulta del Usuario: {question}"
-                },
-                {
-                    "type": "image_url",
-                    "image_url": {"url": f"{img_url}"},
-                },
+                    "content": [
+                        {"type": "text", "text": question},
+                        {"type": "image_url",
+                    "image_url": {"url": f"{img_url}"}}]}
             ],
             temperature=0.7,
             max_tokens=150,
