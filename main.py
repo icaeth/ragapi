@@ -42,5 +42,5 @@ async def upload_documents():
 async def read_documents(prompt: Question):
     """ if not documents:
         raise HTTPException(status_code=400, detail="No documents provided") """
-    embedding.similarity_search(prompt.question)
+    response = embedding.similarity_search_response(prompt.question)
     return {"response": response}
