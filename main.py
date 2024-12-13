@@ -13,6 +13,12 @@ rag_system = RAGSystem()
 
 @app.post("/query/")
 async def query_rag(prompt: Question):
-    context = "contexto de ejemplo"  # Replace with actual dynamic context if applicable
+    context = "información sobre powerBI, se entrega una imágen suministrada por el usuario como apoyo a la pregunta"
     response = rag_system.query(prompt.question, prompt.img_url, context)
+    return {"response": response}
+
+@app.post("/querynoimage/")
+async def query_rag(prompt: Question):
+    context = "información sobre powerBI"
+    response = rag_system.query(prompt.question, context)
     return {"response": response}
