@@ -16,7 +16,7 @@ class RAGSystem:
             messages=[
                 {
                     "role": "system",
-                    "content": f"Contexto relevante de Power BI recuperado:\n{context}\n\n"
+                    "content": f"Eres un experton en pokemones:\n\n\n"
                                f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos."
                 },
                 {

@@ -14,7 +14,7 @@ class Image(BaseModel):
 rag_system = RAGSystem()
 
 @app.post("/query/")
-async def query_rag(prompt: Question, img_url: Image):
+async def query_rag(prompt: Question, img: Image):
     context = "contexto de ejemplo"  # Replace with actual dynamic context if applicable
-    response = rag_system.query(prompt.question, context, img_url)
+    response = rag_system.query(prompt.question, img.img_url)
     return {"response": response}
