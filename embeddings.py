@@ -5,8 +5,8 @@ from langchain_core.documents import Document
 from langchain_postgres import PGVector
 from langchain_postgres.vectorstores import PGVector
 
-os.environ["OPENAI_API_KEY"] = getpass.getpass()
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+#os.getenv("OPENAI_API_KEY")
+#embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
     
     # With the `text-embedding-3` class
     # of models, you can specify the size
@@ -14,7 +14,7 @@ embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
     # dimensions=1024)   
 
 
-class RAGEmbedding:
+""" class RAGEmbedding:
   connection = "postgresql+psycopg://esvanguardia:papitas@pgvector:5432"  # Uses psycopg3!
   collection_name = "vectordb"
   vector_store = PGVector(    
@@ -23,7 +23,7 @@ class RAGEmbedding:
       connection=connection,
       use_jsonb=True,
   )
-
+ """
 
 
 
