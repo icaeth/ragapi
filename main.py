@@ -27,7 +27,7 @@ async def query_rag(prompt: Question):
 @app.post("/querynoimage/")
 async def query_rag(prompt: Question):
     context = "información sobre powerBI, responder utilizando el contexto suministrado"
-    response = rag_system.query(prompt.question, context)
+    response = rag_system.queryNoImage(prompt.question, context)
     return {"response": response}
 
 @app.post("/upload-documents/")
