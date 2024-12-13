@@ -1,15 +1,21 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from ragapi import RAGSystem
+from embeddings import RAGEmbedding
 import os
 
 app = FastAPI()
+
+class Document(BaseModel):
+    content: str
 
 class Question(BaseModel):
     question: str
     img_url: str  
 
 rag_system = RAGSystem()
+
+embedding = RAGEmbedding()
 
 @app.post("/query/")
 async def query_rag(prompt: Question):
@@ -19,6 +25,14 @@ async def query_rag(prompt: Question):
 
 @app.post("/querynoimage/")
 async def query_rag(prompt: Question):
-    context = "información sobre powerBI"
+    context = "información sobre powerBI, responder utilizando el contexto suministrado"
     response = rag_system.query(prompt.question, context)
     return {"response": response}
+
+@app.post("/upload-documents/")
+async def upload_documents(documents: list[Document]):
+    if not documents:
+        raise HTTPException(status_code=400, detail="No documents provided")
+
+    embedding.process_documents(documents)  # Call your method to handle document processing
+    return {"message": f"{len(documents)} documents uploaded and processed successfully."}
