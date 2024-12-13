@@ -5,6 +5,7 @@ httpx
 python-dotenv
 openai
 typing
-psycopg2
+psycopg[c]
 langchain
 langchain_openai
+langchain_postgres

@@ -25,13 +25,13 @@ class RAGSystem:
                         {"type": "image_url",
                     "image_url": {"url": f"{img_url}"}}]}
             ],
-            temperature=0.7,
+            temperature=0.9,
             max_tokens=200,
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0,
             stop=["\n"],
-        )
+        )        
         return response.choices[0].message.content
     
     def queryNoImage(self, question, context):

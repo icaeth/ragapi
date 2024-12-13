@@ -1,39 +1,30 @@
+import getpass
 import os
-import psycopg2
-from psycopg2.extras import execute_values
-from fastapi import HTTPException
 from langchain_openai import OpenAIEmbeddings
+from langchain_core.documents import Document
+from langchain_postgres import PGVector
+from langchain_postgres.vectorstores import PGVector
+
+os.environ["OPENAI_API_KEY"] = getpass.getpass()
+embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
+    
+    # With the `text-embedding-3` class
+    # of models, you can specify the size
+    # of the embeddings you want returned.
+    # dimensions=1024)   
+
 
 class RAGEmbedding:
-    def __init__(self):
-        # Initialize OpenAI Embeddings
-        self.embedding_model = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"))
-        
-        # Establish database connection
-        self.conn = psycopg2.connect(
-            dbname="vectordb",
-            user="esvanguardia",
-            password="papitas",
-            host="pgvector",
-            port=5432
-        )
+  connection = "postgresql+psycopg://esvanguardia:papitas@pgvector:5432"  # Uses psycopg3!
+  collection_name = "vectordb"
+  vector_store = PGVector(    
+      embeddings=embeddings,
+      collection_name=collection_name,
+      connection=connection,
+      use_jsonb=True,
+  )
 
-    def process_documents(self, documents):
-        with self.conn.cursor() as cur:
-            for doc in documents:
-                try:
-                    # Generate the embedding, can specify chuncksize
-                    embedding = self.embedding_model.embed_documents(texts=doc.content)
-                except Exception as e:
-                    raise HTTPException(status_code=500, detail=f"Embedding generation failed: {str(e)}")
-                
-                try:
-                    # Store in the database
-                    execute_values(cur, """
-                        INSERT INTO documents (content, embedding) VALUES %s
-                    """, [(doc.content, embedding.tolist())])
-                except Exception as e:
-                    self.conn.rollback()
-                    raise HTTPException(status_code=500, detail=f"Database insertion failed: {str(e)}")
 
-            self.conn.commit()
+
+
+    

@@ -20,13 +20,14 @@ embedding = RAGEmbedding()
 
 @app.post("/query/")
 async def query_rag(prompt: Question):
-    context = "información sobre powerBI, se entrega una imágen suministrada por el usuario como apoyo a la pregunta"
+    context = "Información sobre powerBI, se entrega una imágen suministrada por el usuario como apoyo a la pregunta"
     response = rag_system.query(prompt.question, prompt.img_url, context)
-    return {"response": response}
+    #agregar la pregunta que se realiza al sistema rag
+    return {"response": response, "question": rag_system.}
 
 @app.post("/querynoimage/")
 async def query_rag(prompt: Question):
-    context = "información sobre powerBI, responder utilizando el contexto suministrado"
+    context = "Información sobre powerBI, responder utilizando el contexto suministrado"
     response = rag_system.queryNoImage(prompt.question, context)
     return {"response": response}
 
@@ -34,6 +35,5 @@ async def query_rag(prompt: Question):
 async def upload_documents(documents: list[Document]):
     if not documents:
         raise HTTPException(status_code=400, detail="No documents provided")
-
     embedding.process_documents(documents)  # Call your method to handle document processing
     return {"message": f"{len(documents)} documents uploaded and processed successfully."}
