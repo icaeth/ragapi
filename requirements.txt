@@ -4,7 +4,3 @@ httpx
 python-dotenv
 openai
 typing
-langchain 
-numpy 
-pandas
-psycopg2
