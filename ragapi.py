@@ -9,19 +9,19 @@ class RAGSystem:
         self.api_key = os.getenv("OPENAI_API_KEY")
         openai.api_key = self.api_key
 
-    def query(self, query_text, context, img_url):
+    def query(self, question, img_url, context):
         # Using the updated ChatCompletion API
         response = openai.chat.completions.create (
             model="gpt-4o",            
             messages=[
                 {
                     "role": "system",
-                    "content": f"Eres un experton en pokemones:\n\n\n"
+                    "content": f"Eres un experton en pokemones:\n{context}\n\n"
                                f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos."
                 },
                 {
                     "role": "user",
-                    "content": f"Consulta del Usuario: {query_text}"
+                    "content": f"Consulta del Usuario: {question}"
                 },
                 {
                     "type": "image_url",
