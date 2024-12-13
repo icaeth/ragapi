@@ -11,7 +11,7 @@ class RAGEmbedding:
         
         # Establish database connection
         self.conn = psycopg2.connect(
-            dbname="pgvector",
+            dbname="vectordb",
             user="esvanguardia",
             password="papitas",
             host="pgvector",
