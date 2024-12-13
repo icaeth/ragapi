@@ -11,8 +11,8 @@ class RAGSystem:
 
     def query(self, query_text, context):
         # Using the updated ChatCompletion API
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
+        response = openai.chat.completions.create (
+            model="gpt-4o",            
             messages=[
                 {
                     "role": "system",
@@ -29,6 +29,6 @@ class RAGSystem:
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0,
-            stop=["\n"]
+            stop=["\n"],
         )
         return response.choices[0].message['content']
