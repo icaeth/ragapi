@@ -1,16 +1,17 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from ragapi import RAGSystem
+import os
 
 app = FastAPI()
-rag_system = RAGSystem()
 
 class Question(BaseModel):
-    question: str
+    question: str 
 
-# Endpoint para realizar consultas
+rag_system = RAGSystem()
+
 @app.post("/query/")
 async def query_rag(prompt: Question):
-    response = rag_system.query(prompt.question, context="contexto aquí")  
+    context = "contexto de ejemplo"  # Replace with actual dynamic context if applicable
+    response = rag_system.query(prompt.question, context)
     return {"response": response}
-

@@ -10,13 +10,20 @@ class RAGSystem:
         openai.api_key = self.api_key
 
     def query(self, query_text, context):
-        # Configure the language model
-        response = openai.Completion.create(
-            engine="gpt-3.5-turbo",
-            prompt=f"Contexto relevante de Power BI recuperado:\n{context}\n\n"
-                   f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos. "
-                   f"Responde a la siguiente consulta usando exclusivamente el contexto relevante proporcionado en español.\n\n"
-                   f"Consulta del Usuario: {query_text} \n\nRespuesta experta:",
+        # Using the updated ChatCompletion API
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "system",
+                    "content": f"Contexto relevante de Power BI recuperado:\n{context}\n\n"
+                               f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos."
+                },
+                {
+                    "role": "user",
+                    "content": f"Consulta del Usuario: {query_text}"
+                }
+            ],
             temperature=0.7,
             max_tokens=150,
             top_p=1.0,
@@ -24,11 +31,4 @@ class RAGSystem:
             presence_penalty=0.0,
             stop=["\n"]
         )
-        return response.choices[0].text
-
-    # Removed close_connection since there is no such method for this API usage
-
-# Usage example
-# rag_system = RAGSystem()
-# response = rag_system.query("Tu consulta aquí", "contexto relevante aquí")
-# print(response)
+        return response.choices[0].message['content']
