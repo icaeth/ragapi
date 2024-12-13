@@ -23,7 +23,7 @@ class RAGEmbedding:
             for doc in documents:
                 try:
                     # Generate the embedding
-                    embedding = self.embedding_model.embed(doc.content)
+                    embedding = self.embedding_model.embed_documents(doc.content)
                 except Exception as e:
                     raise HTTPException(status_code=500, detail=f"Embedding generation failed: {str(e)}")
                 
