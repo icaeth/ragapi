@@ -9,7 +9,7 @@ class RAGSystem:
         self.api_key = os.getenv("OPENAI_API_KEY")
         openai.api_key = self.api_key
 
-    def query(self, query_text, context):
+    def query(self, query_text, context, img_url):
         # Using the updated ChatCompletion API
         response = openai.chat.completions.create (
             model="gpt-4o",            
@@ -22,7 +22,11 @@ class RAGSystem:
                 {
                     "role": "user",
                     "content": f"Consulta del Usuario: {query_text}"
-                }
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {"url": f"{img_url}"},
+                },
             ],
             temperature=0.7,
             max_tokens=150,
