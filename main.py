@@ -7,14 +7,12 @@ app = FastAPI()
 
 class Question(BaseModel):
     question: str
-
-class Image(BaseModel):
     img_url: str  
 
 rag_system = RAGSystem()
 
 @app.post("/query/")
-async def query_rag(prompt: Question, img: Image):
+async def query_rag(prompt: Question):
     context = "contexto de ejemplo"  # Replace with actual dynamic context if applicable
-    response = rag_system.query(prompt.question, img.img_url)
+    response = rag_system.query(prompt.question, prompt.img_url)
     return {"response": response}
