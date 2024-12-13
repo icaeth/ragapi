@@ -7,4 +7,3 @@ typing
 langchain 
 numpy 
 pandas
-psycopg2
