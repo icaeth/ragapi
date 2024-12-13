@@ -32,8 +32,15 @@ async def query_rag(prompt: Question):
     return {"response": response}
 
 @app.post("/upload-documents/")
-async def upload_documents(documents: list[Document]):
-    if not documents:
-        raise HTTPException(status_code=400, detail="No documents provided")
-    embedding.process_documents(documents)  # Call your method to handle document processing
-    return {"message": f"{len(documents)} documents uploaded and processed successfully."}
+async def upload_documents():
+    """ if not documents:
+        raise HTTPException(status_code=400, detail="No documents provided") """
+    embedding.process_documents()
+    return {"documents uploaded and processed successfully."}
+
+@app.get("/read-documents/")
+async def read_documents(prompt: Question):
+    """ if not documents:
+        raise HTTPException(status_code=400, detail="No documents provided") """
+    embedding.similarity_search(prompt.question)
+    return {"response": response}
