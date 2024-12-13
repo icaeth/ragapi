@@ -12,7 +12,7 @@ class RAGSystem:
     def query(self, query_text, context):
         # Configure the language model
         response = openai.Completion.create(
-            engine="gpt-",
+            engine="gpt-3.5-turbo",
             prompt=f"Contexto relevante de Power BI recuperado:\n{context}\n\n"
                    f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos. "
                    f"Responde a la siguiente consulta usando exclusivamente el contexto relevante proporcionado en español.\n\n"
