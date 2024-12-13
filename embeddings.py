@@ -14,8 +14,8 @@ class RAGEmbedding:
             dbname=os.getenv("DB_NAME"),
             user=os.getenv("DB_USER"),
             password=os.getenv("DB_PASSWORD"),
-            host=os.getenv("DB_HOST"),
-            port=os.getenv("DB_PORT")
+            host=os.getenv("DB_HOST", "pgvector"),
+            port=5432
         )
 
     def process_documents(self, documents):
