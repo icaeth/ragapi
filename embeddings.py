@@ -22,8 +22,8 @@ class RAGEmbedding:
         with self.conn.cursor() as cur:
             for doc in documents:
                 try:
-                    # Generate the embedding
-                    embedding = self.embedding_model.embed_documents(doc.content)
+                    # Generate the embedding, can specify chuncksize
+                    embedding = self.embedding_model.embed_documents(texts=doc.content)
                 except Exception as e:
                     raise HTTPException(status_code=500, detail=f"Embedding generation failed: {str(e)}")
                 
