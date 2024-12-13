@@ -15,11 +15,9 @@ embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 
 
 class RAGEmbedding:
-  connection = "postgresql+psycopg://esvanguardia:papitas@pgvector:5432"  # Uses psycopg3!
-  collection_name = "vectordb"
+  connection = "postgresql+psycopg://esvanguardia:papitas@pgvector:5432/vectordb" # Uses psycopg3!  
   vector_store = PGVector(    
       embeddings=embeddings,
-      collection_name=collection_name,
       connection=connection,
       use_jsonb=True,
   )  
