@@ -23,7 +23,7 @@ async def query_rag(prompt: Question):
     context = "Información sobre powerBI, se entrega una imágen suministrada por el usuario como apoyo a la pregunta"
     response = rag_system.query(prompt.question, prompt.img_url, context)
     #agregar la pregunta que se realiza al sistema rag
-    return {"response": response, "question": "tbd"}
+    return {"response": response[0], "question": response[1]}
 
 @app.post("/querynoimage/")
 async def query_rag(prompt: Question):

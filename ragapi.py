@@ -31,8 +31,9 @@ class RAGSystem:
             frequency_penalty=0.0,
             presence_penalty=0.0,
             stop=["\n"],
-        )        
-        return response.choices[0].message.content
+        )
+        answer =  response.choices[0].message.content       
+        return [answer, question] 
     
     def queryNoImage(self, question, context):
         # Using the updated ChatCompletion API
