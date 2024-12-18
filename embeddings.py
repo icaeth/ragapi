@@ -49,7 +49,6 @@ class RAGEmbedding:
   async def vector_pdf(alternative_vector_store, file: UploadFile):
       # Generate a temporary file path
       temp_file_path = f"temp_{file.filename}"
-      
       try:
           # Save the uploaded file temporarily
           with open(temp_file_path, "wb") as buffer:
@@ -68,22 +67,18 @@ class RAGEmbedding:
               print(pages[0].page_content[:100])
               print(pages[0].metadata)
           
-          # Embed documents
-          embed_vectors = embeddings.embed_documents([page.page_content for page in pages])
-          
-          # Store vectors
-          with alternative_vector_store as store:
-              store.add_documents(pages, ids=[file.filename])
+          # Store vectors directly using the alternative vector store
+          alternative_vector_store.add_documents(pages, ids=[file.filename])
           
           return True
       
       except Exception as e:
           print(f"Error processing PDF: {e}")
-
+          raise  # Re-raise the exception to be handled by the caller
+      
       finally:
           # Clean up temporary file
           if os.path.exists(temp_file_path):
               os.remove(temp_file_path)
-
-
+  
     
