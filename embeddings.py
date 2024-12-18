@@ -49,14 +49,18 @@ class RAGEmbedding:
     # Vectorizar el texto extraído
         loader = PyPDFLoader(file)
         pages = []
-        async for page in loader.alazy_load():
-          pages.append(page)
-        
-        embed_vectors= embeddings.embed_documents(pages)
+        for doc in loader.lazy_load():
+              pages.append(doc)
+              if len(pages) >= 10:
+                pages = []
+        len(pages)
+        print(pages[0].page_content[:100])
+        print(pages[0].metadata)
+        embed_vectors = embeddings.embed_documents(pages)
 
         # Establecer conexión a la base de datos alternativa y almacenar el vector
         with alternative_vector_store as store:
-            store.add_documents([{"content": pages}], ids=[file.filename])
+            store.add_documents([{"content": embed_vectors}], ids=[file.filename])
 
 
 
