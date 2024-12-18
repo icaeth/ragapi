@@ -1,38 +1,43 @@
 name: Deploy to Dev
-
 on:
-  push:
-    branches: [dev]
+  release:
+    types: [published]
 
 jobs:
-  deploy_dev:
-    name: Deploy to Dev Environment
+  push_to_registry:
+    name: Push Docker image to Docker Hub
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2  # Use this to ensure Buildx is set up
-
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
           images: icaeth/${{ github.event.repository.name }}
           tags: |
             type=ref,event=branch,pattern=^refs/(tags)/(?<major>v[0-9]+)\.(?<minor>[0-9]+)\.(?<patch>[0-9]+)$
             type=raw,value=latest  # Optional: add latest tag for master/main
 
+      - name: create DNS
+        continue-on-error: true
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: 'https://dns.hetzner.com/api/v1/records'
+          method: 'POST'
+          customHeaders: '{"Auth-API-Token": "${{ secrets.APITOKEN }}"}'
+          data: '{"zone_id": "eum3jGos9Mf8M3ToouhMLT","type": "A","name": "${{ github.event.repository.name }}","value": "5.9.55.176","ttl": 0}'
+
       - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
         with:
           context: .
           file: ./Dockerfile
@@ -40,7 +45,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-      # Resto de los pasos con configuraciones de dev
+
       - name: Executing remote SSH commands
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -63,6 +68,7 @@ jobs:
           port: 22
           source: "docker-compose.yaml, nginx.conf, default.conf"
           target: yaml/${{ github.event.repository.name }}
+
 
       - name: Docker Compose
         uses: appleboy/ssh-action@v1.0.0
