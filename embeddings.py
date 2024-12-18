@@ -48,8 +48,7 @@ class RAGEmbedding:
   async def vector_pdf(alternative_vector_store, file):
     # Vectorizar el texto extraído
         loader = PyPDFLoader(file)
-        print(file)
-        print(loader)
+        print(f'response={loader}', flush=True)
         pages = []
         for doc in loader.lazy_load():
               pages.append(doc)
