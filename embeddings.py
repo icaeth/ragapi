@@ -23,8 +23,8 @@ class RAGEmbedding:
             use_jsonb=True,
         )
 
-    def add_documents(self, vector_store, docs):
-        vector_store.add_documents(docs, ids=[doc.metadata.get('id', doc.metadata.get('source', 'unknown')) for doc in docs])
+    def add_documents(self, docs):
+        self.vector_store.add_documents(docs, ids=[doc.metadata.get('id', doc.metadata.get('source', 'unknown')) for doc in docs])
 
     async def vector_pdf(self, file: UploadFile):
         # Generate a temporary file path
