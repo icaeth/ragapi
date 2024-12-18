@@ -79,5 +79,6 @@ jobs:
           port: 22
           script: |
             cd yaml/${{ github.event.repository.name }}
+            docker rm -f ${{ github.event.repository.name }}
             docker-compose pull
             docker-compose up -d --force-recreate
