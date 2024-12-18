@@ -45,24 +45,44 @@ class RAGEmbedding:
         })    
     return response
   
-  async def vector_pdf(alternative_vector_store, file):
-    # Vectorizar el texto extraído
-        loader = PyPDFLoader(file)
-        print(f'response={loader}', flush=True)
-        pages = []
-        for doc in loader.lazy_load():
-              pages.append(doc)
-              if len(pages) >= 10:
-                pages = []
-        len(pages)
-        print(pages[0].page_content[:100])
-        print(pages[0].metadata)
-        embed_vectors = embeddings.embed_documents(pages)
-
-        # Establecer conexión a la base de datos alternativa y almacenar el vector
-        with alternative_vector_store as store:
-            store.add_documents([{"content": pages}], ids=[file.filename])
-
+  async def vector_pdf(alternative_vector_store, file: UploadFile):
+      # Generate a temporary file path
+      temp_file_path = f"temp_{file.filename}"
+      
+      try:
+          # Save the uploaded file temporarily
+          with open(temp_file_path, "wb") as buffer:
+              buffer.write(await file.read())
+          
+          # Use the file path with PyPDFLoader
+          loader = PyPDFLoader(temp_file_path)
+          pages = list(loader.lazy_load())
+          
+          # Limit pages if needed
+          if len(pages) > 10:
+              pages = pages[:10]
+          
+          # Print first page content and metadata for debugging
+          if pages:
+              print(pages[0].page_content[:100])
+              print(pages[0].metadata)
+          
+          # Embed documents
+          embed_vectors = embeddings.embed_documents([page.page_content for page in pages])
+          
+          # Store vectors
+          with alternative_vector_store as store:
+              store.add_documents(pages, ids=[file.filename])
+          
+          return True
+      
+      except Exception as e:
+          print(f"Error processing PDF: {e}")
+          
+      finally:
+          # Clean up temporary file
+          if os.path.exists(temp_file_path):
+              os.remove(temp_file_path)
 
 
     
