@@ -1,0 +1,92 @@
+import os
+import psycopg2
+import tensorflow as tf
+import tensorflow_hub as hub
+from psycopg2.extras import execute_values
+from fastapi import HTTPException
+from langchain_openai import OpenAIEmbeddings
+
+
+
+class RAGEmbedding:
+    def __init__(self):
+        # Initialize OpenAI Embeddings
+        self.embedding_model = OpenAIEmbeddings(openai_api_key=os.getenv("OPENAI_API_KEY"))
+        # Cargar el modelo de Universal Sentence Encoder desde TensorFlow Hub
+        self.embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+        
+        # Establish database connection
+        self.conn = psycopg2.connect(
+            dbname="vectordb",
+            user="esvanguardia",
+            password="papitas",
+            host="pgvector",
+            port=5432
+        )
+
+    def process_documents(self, documents):
+        with self.conn.cursor() as cur:
+            for doc in documents:
+                try:
+                    # Generate the embedding, can specify chuncksize
+                    embedding = self.embedding_model.embed_documents(texts=doc.content)
+                except Exception as e:
+                    raise HTTPException(status_code=500, detail=f"Embedding generation failed: {str(e)}")
+                
+                try:
+                    # Store in the database
+                    execute_values(cur, """
+                        INSERT INTO documents (content, embedding) VALUES %s
+                    """, [(doc.content, embedding.tolist())])
+                except Exception as e:
+                    self.conn.rollback()
+                    raise HTTPException(status_code=500, detail=f"Database insertion failed: {str(e)}")
+
+            self.conn.commit()
+
+
+    def retrieve_embeddings(self):
+        with self.conn.cursor() as cur:
+            try:
+                cur.execute("SELECT content, embedding FROM documents")
+                results = cur.fetchall()
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Error retrieving embeddings: {str(e)}")
+
+            embeddings_data = []
+            for content, embedding in results:
+                processed_embedding = eval(embedding)  # Convierte la string de embedding a una estructura de datos adecuada
+                embeddings_data.append((content, processed_embedding))
+            return embeddings_data
+
+    def create_context(self, question_embedding):
+        with self.conn.cursor() as cur:
+            # Una consulta SQL que utiliza la extensión pgvector para calcular la similitud
+            try:
+                cur.execute("""
+                    SELECT content, embedding
+                    FROM documents
+                    ORDER BY embedding <-> %s
+                    LIMIT 5
+                """, (question_embedding,))
+                context = cur.fetchall()
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Error creating context: {str(e)}")
+            return context
+
+
+    def get_embedding_for_question(self, question):
+        # Convertir la pregunta en un tensor para procesarla
+        question_embedding = self.embed([question])
+        
+        # Devuelve el embedding como una lista de valores
+        return question_embedding.numpy().flatten()
+
+    def find_related_documents(self, question):
+        # Obtener el embedding de la pregunta
+        question_embedding = self.get_embedding_for_question(question)
+        # Usa create_context para encontrar documentos relacionados
+        related_docs = self.create_context(question_embedding)
+        return related_docs
+    
+

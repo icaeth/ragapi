@@ -9,26 +9,50 @@ class RAGSystem:
         self.api_key = os.getenv("OPENAI_API_KEY")
         openai.api_key = self.api_key
 
-    def query(self, query_text, context):
-        # Configure the language model
-        response = openai.Completion.create(
-            engine="gpt-3.5-turbo",
-            prompt=f"Contexto relevante de Power BI recuperado:\n{context}\n\n"
-                   f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos. "
-                   f"Responde a la siguiente consulta usando exclusivamente el contexto relevante proporcionado en español.\n\n"
-                   f"Consulta del Usuario: {query_text} \n\nRespuesta experta:",
-            temperature=0.7,
-            max_tokens=150,
+    def query(self, question, img_url, context):
+        # Using the updated ChatCompletion API
+        response = openai.chat.completions.create (
+            model="gpt-4o",            
+            messages=[
+                {
+                    "role": "system",
+                    "content": f"Eres un experton en Power BI:\n{context}\n\n"
+                               f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos."
+                },{                
+                    "role": "user",
+                    "content": [
+                        {"type": "text", "text": question},
+                        {"type": "image_url",
+                    "image_url": {"url": f"{img_url}"}}]}
+            ],
+            temperature=0.9,
+            max_tokens=200,
             top_p=1.0,
             frequency_penalty=0.0,
             presence_penalty=0.0,
-            stop=["\n"]
+            stop=["\n"],
         )
-        return response.choices[0].text
-
-    # Removed close_connection since there is no such method for this API usage
-
-# Usage example
-# rag_system = RAGSystem()
-# response = rag_system.query("Tu consulta aquí", "contexto relevante aquí")
-# print(response)
+        answer =  response.choices[0].message.content
+              
+        return [answer, response.object] 
+    
+    def queryNoImage(self, question, context):
+        # Using the updated ChatCompletion API
+        response = openai.chat.completions.create (
+            model="gpt-4o",            
+            messages=[
+                {
+                    "role": "system",
+                    "content": f"Eres un experton en Power BI:\n{context}\n\n"
+                               f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos."
+                },{                
+                    "role": "user",
+                    "content": question}],
+            temperature=0.7,
+            max_tokens=500,
+            top_p=1.0,
+            frequency_penalty=0.0,
+            presence_penalty=0.0,
+            stop=["\n"],
+        )
+        return response.choices[0].message.content
