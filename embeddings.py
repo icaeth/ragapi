@@ -26,7 +26,7 @@ class RAGEmbedding:
     def add_documents(self, vector_store, docs):
         vector_store.add_documents(docs, ids=[doc.metadata.get('id', doc.metadata.get('source', 'unknown')) for doc in docs])
 
-    async def vector_pdf(self, alternative_vector_store, file: UploadFile):
+    async def vector_pdf(self, file: UploadFile):
         # Generate a temporary file path
         temp_file_path = f"temp_{file.filename}"
         try:
@@ -48,7 +48,7 @@ class RAGEmbedding:
                 print(pages[0].metadata)
             
             # Store vectors directly using the alternative vector store
-            self.add_documents(alternative_vector_store, pages)
+            self.add_documents(pages)
             
             return True
         
