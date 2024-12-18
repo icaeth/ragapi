@@ -1,5 +1,6 @@
 import getpass
 import os
+from fastapi import UploadFile, File
 from langchain_openai import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_postgres import PGVector
@@ -78,7 +79,7 @@ class RAGEmbedding:
       
       except Exception as e:
           print(f"Error processing PDF: {e}")
-          
+
       finally:
           # Clean up temporary file
           if os.path.exists(temp_file_path):
