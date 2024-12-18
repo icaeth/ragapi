@@ -9,3 +9,4 @@ psycopg[c]
 langchain
 langchain_openai
 langchain_postgres
+pdfplumber

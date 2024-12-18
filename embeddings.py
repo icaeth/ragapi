@@ -20,6 +20,13 @@ class RAGEmbedding:
       embeddings=embeddings,
       connection=connection,
       use_jsonb=True,
+  )
+
+  alternative_db_connection = "postgresql+psycopg://esvanguardia:papitas@pgvector:5432/transcriptdb"
+  alternative_vector_store = PGVector(
+      embeddings=OpenAIEmbeddings(model="text-embedding-3-large"),
+      connection=alternative_db_connection,
+      use_jsonb=True,
   )  
 
   def process_documents(vector_store, docs): 
@@ -36,6 +43,14 @@ class RAGEmbedding:
             "metadata": doc.metadata
         })    
     return response
+  
+  def vector_pdf(alternative_vector_store, text, file):
+    # Vectorizar el texto extraído
+        embeddings.embed_documents(text)
+
+        # Establecer conexión a la base de datos alternativa y almacenar el vector
+        with alternative_vector_store as store:
+            store.add_documents([{"content": text}], ids=[file.filename])
 
 
 
