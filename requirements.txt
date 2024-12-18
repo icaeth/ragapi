@@ -9,5 +9,6 @@ psycopg[c]
 langchain
 langchain_openai
 langchain_postgres
-pdfplumber
+langchain_community
+pypdf
 python-multipart

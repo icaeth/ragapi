@@ -4,6 +4,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_postgres import PGVector
 from langchain_postgres.vectorstores import PGVector
+from langchain_community.document_loaders import PyPDFLoader
 
 """ apikey = os.getenv("OPENAI_API_KEY") """
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
@@ -44,9 +45,14 @@ class RAGEmbedding:
         })    
     return response
   
-  def vector_pdf(alternative_vector_store, text, file):
+  async def vector_pdf(alternative_vector_store, text, file):
     # Vectorizar el texto extraído
-        embeddings.embed_documents(text)
+        loader = PyPDFLoader(file)
+        pages = []
+        async for page in loader.alazy_load():
+          pages.append(page)
+        
+        embeddings.embed_documents(pages)
 
         # Establecer conexión a la base de datos alternativa y almacenar el vector
         with alternative_vector_store as store:
