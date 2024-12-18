@@ -51,9 +51,8 @@ async def read_documents(prompt: Question):
 @app.post("/upload-pdf/")
 async def upload_pdf(file: UploadFile = File(...)):
     try:
-        await embedding.vector_pdf(file.filename)
-
+        # Pass the entire file object, not just the filename
+        await embedding.vector_pdf(file)
         return {"filename": file.filename, "message": "Archivo procesado y vector almacenado correctamente."}
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
