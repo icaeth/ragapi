@@ -51,7 +51,7 @@ async def read_documents(prompt: Question):
 @app.post("/upload-pdf/")
 async def upload_pdf(file: UploadFile = File(...)):
     try:
-        await embedding.vector_pdf(file)
+        await embedding.vector_pdf(await file.read())
 
         return {"filename": file.filename, "message": "Archivo procesado y vector almacenado correctamente."}
 
