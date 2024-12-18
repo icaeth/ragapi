@@ -61,7 +61,7 @@ class RAGEmbedding:
 
         # Establecer conexión a la base de datos alternativa y almacenar el vector
         with alternative_vector_store as store:
-            store.add_documents([{"content": embed_vectors}], ids=[file.filename])
+            store.add_documents([{"content": pages}], ids=[file.filename])
 
 
 
