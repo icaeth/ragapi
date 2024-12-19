@@ -46,8 +46,8 @@ class RAGSystem:
             messages=[
                 {
                     "role": "system",
-                    "content": f"Eres un experto en Power BI:\n{context}\n\n"
-                               f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos."
+                    "content": f"Eres un asistente de una tienda de escaperoom y esto es lo que sabes sobre la tienda:\n{context}\n\n"
+                               f"Contesta de forma amable y lúdica a las preguntas"
                 },{                
                     "role": "user",
                     "content": question}],

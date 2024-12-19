@@ -26,14 +26,14 @@ embedding = RAGEmbedding()
 
 @app.post("/query/")
 async def query_rag(prompt: Question):
-    context = "Información sobre powerBI, se entrega una imágen suministrada por el usuario como apoyo a la pregunta"
+    context = "HORARIOS ESCAPE ROOM LUNES a VIERNES 10:00 a 20:00 SÁBADO 12:00 a 22:00 DOMINGO 12:00 a 20:00 NORMAS ESCAPE ROOM 1.- se debe pagar 1 integrante por adelantado 2.- Debes llegar 15 minutos antes de la hora indicada 3.- Se debe pagar el total antes de acceder al cuarto"
     response = rag_system.query(prompt.question, prompt.img_url, context)
     #agregar la pregunta que se realiza al sistema rag
     return {"response": response[0], "question": response[1]}
 
 @app.post("/querynoimage/")
 async def query_rag(prompt: Question):
-    context = "Información sobre powerBI, responder utilizando el contexto suministrado"
+    context = "HORARIOS ESCAPE ROOM LUNES a VIERNES 10:00 a 20:00 SÁBADO 12:00 a 22:00 DOMINGO 12:00 a 20:00 NORMAS ESCAPE ROOM 1.- se debe pagar 1 integrante por adelantado 2.- Debes llegar 15 minutos antes de la hora indicada 3.- Se debe pagar el total antes de acceder al cuarto"
     response = rag_system.queryNoImage(prompt.question, context)
     return {"response": response, "question": "tbd new"}
 
