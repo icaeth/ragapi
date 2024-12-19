@@ -63,19 +63,17 @@ class RAGSystem:
     async def queryrag(self, question):
         #similarity search ragsystem
         context = await embedding.similarity_search(query=question)
-        messages = [
-                {
-                    "role": "system",
-                    "content": f"Eres un experto en Power BI con este contexto:\n{context}\n\n"
-                               f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos."
-                },{                
-                    "role": "user",
-                    "content": question}]
-
         # Using the updated ChatCompletion API
         response = await openai.chat.completions.create(
             model="gpt-4o",            
-            messages=messages,
+            messages=[
+                {
+                    "role": "system",
+                    "content": f"Eres un asistente de una tienda de escaperoom y esto es lo que sabes sobre la tienda:\n{context}\n\n"
+                               f"Contesta de forma amable y lúdica a las preguntas"
+                },{                
+                    "role": "user",
+                    "content": question}],
             temperature=0.7,
             max_tokens=500,
             top_p=1.0,
@@ -83,4 +81,4 @@ class RAGSystem:
             presence_penalty=0.0,
             stop=["\n"],
         )
-        return [response.choices[0].message.content, messages ]
+        return response.choices[0].message.content

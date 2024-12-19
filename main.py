@@ -40,7 +40,7 @@ async def query_rag(prompt: Question):
 @app.post("/queryrag/")
 async def query_rag(prompt: Question):    
     response = rag_system.queryrag(prompt.question)
-    return {"response": response[0], "context": response[1]}
+    return {"response": response}
 
 @app.post("/upload-documents/")
 async def upload_course_info(courseInfo: Union[Document, ArrayDocument]):
