@@ -57,7 +57,7 @@ jobs:
             mkdir -p yaml/${{ github.event.repository.name }}r
             cd yaml/${{ github.event.repository.name }}r
             touch .env
-            printf "NGINX_CONTAINER=${{ github.event.repository.name }}\nVIRTUAL_HOST=ragapi.samai.cl\nLETSENCRYPT_EMAIL=capitan23@samai.cl\nIMAGE=${{ steps.meta.outputs.tags }}\nOPENAI_API_KEY=${{ secrets.OPENAI }}" > .env
+            printf "NGINX_CONTAINER=${{ github.event.repository.name }}r\nVIRTUAL_HOST=ragapi.samai.cl\nLETSENCRYPT_EMAIL=capitan23@samai.cl\nIMAGE=${{ steps.meta.outputs.tags }}\nOPENAI_API_KEY=${{ secrets.OPENAI }}" > .env
 
       - name: Copy files via SSH
         uses: appleboy/scp-action@v0.1.7
