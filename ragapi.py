@@ -64,7 +64,7 @@ class RAGSystem:
         #similarity search ragsystem
         context = embedding.similarity_search(query=question)
         # Using the updated ChatCompletion API
-        response = await openai.chat.completions.create(
+        response = openai.chat.completions.create(
             model="gpt-4o",            
             messages=[
                 {
