@@ -1,8 +1,11 @@
 import os
 from dotenv import load_dotenv
-import openai  # Ensure you have the OpenAI library installed
+import openai 
+from embeddings import RAGEmbedding
 
 load_dotenv()
+
+embedding = RAGEmbedding()
 
 class RAGSystem:
     def __init__(self):
@@ -43,7 +46,7 @@ class RAGSystem:
             messages=[
                 {
                     "role": "system",
-                    "content": f"Eres un experton en Power BI:\n{context}\n\n"
+                    "content": f"Eres un experto en Power BI:\n{context}\n\n"
                                f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos."
                 },{                
                     "role": "user",
@@ -56,3 +59,28 @@ class RAGSystem:
             stop=["\n"],
         )
         return response.choices[0].message.content
+    
+    async def queryrag(self, question):
+        #similarity search ragsystem
+        context = await embedding.similarity_search(query=question)
+        messages = [
+                {
+                    "role": "system",
+                    "content": f"Eres un experto en Power BI con este contexto:\n{context}\n\n"
+                               f"Eres un experto en Power BI con experiencia en análisis de datos y reportes interactivos."
+                },{                
+                    "role": "user",
+                    "content": question}]
+
+        # Using the updated ChatCompletion API
+        response = await openai.chat.completions.create(
+            model="gpt-4o",            
+            messages=messages,
+            temperature=0.7,
+            max_tokens=500,
+            top_p=1.0,
+            frequency_penalty=0.0,
+            presence_penalty=0.0,
+            stop=["\n"],
+        )
+        return [response.choices[0].message.content, messages ]

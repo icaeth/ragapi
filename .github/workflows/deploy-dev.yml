@@ -1,7 +1,7 @@
 name: Deploy to Dev
 on:
-  release:
-    types: [published]
+  push:
+    branches: [master]
 
 jobs:
   push_to_registry:
@@ -22,7 +22,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: icaeth/${{ github.event.repository.name }}
+          images: icaeth/${{ github.event.repository.name }}r
           tags: |
             type=ref,event=branch,pattern=^refs/(tags)/(?<major>v[0-9]+)\.(?<minor>[0-9]+)\.(?<patch>[0-9]+)$
             type=raw,value=latest  # Optional: add latest tag for master/main
@@ -54,10 +54,10 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            mkdir -p yaml/${{ github.event.repository.name }}
-            cd yaml/${{ github.event.repository.name }}
+            mkdir -p yaml/${{ github.event.repository.name }}r
+            cd yaml/${{ github.event.repository.name }}r
             touch .env
-            printf "NGINX_CONTAINER=${{ github.event.repository.name }}\nVIRTUAL_HOST=devrag.esvanguardia.cl\nLETSENCRYPT_EMAIL=capitan23@samai.cl\nIMAGE=${{ steps.meta.outputs.tags }}\nOPENAI_API_KEY=${{ secrets.OPENAI }}" > .env
+            printf "NGINX_CONTAINER=${{ github.event.repository.name }}\nVIRTUAL_HOST=ragapi.samai.cl\nLETSENCRYPT_EMAIL=capitan23@samai.cl\nIMAGE=${{ steps.meta.outputs.tags }}\nOPENAI_API_KEY=${{ secrets.OPENAI }}" > .env
 
       - name: Copy files via SSH
         uses: appleboy/scp-action@v0.1.7
@@ -67,7 +67,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           source: "docker-compose.yaml, nginx.conf, default.conf"
-          target: yaml/${{ github.event.repository.name }}
+          target: yaml/${{ github.event.repository.name }}r
 
 
       - name: Docker Compose
@@ -78,7 +78,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            cd yaml/${{ github.event.repository.name }}
-            docker rm -f ${{ github.event.repository.name }}
+            cd yaml/${{ github.event.repository.name }}r
+            docker rm -f ${{ github.event.repository.name }}r
             docker-compose pull
             docker-compose up -d --force-recreate

@@ -12,3 +12,5 @@ langchain_postgres
 langchain_community
 pypdf
 python-multipart
+pdfminer
+pdfplumber
