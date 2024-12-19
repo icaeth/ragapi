@@ -39,7 +39,7 @@ async def query_rag(prompt: Question):
 
 @app.post("/queryrag/")
 async def query_rag(prompt: Question):    
-    response = rag_system.queryrag(prompt.question)
+    response = await rag_system.queryrag(prompt.question)
     return {"response": response}
 
 @app.post("/upload-documents/")
